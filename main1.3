@@ -35,6 +35,7 @@ void viewPlaylist();
 void addSongsToPlaylist();
 void viewPlaylistSong();
 void removePlaylistSong();
+void deletePlaylist();
 
 int main()
 {
@@ -101,7 +102,7 @@ int main()
 					removePlaylistSong();
 					break;
 				case 6:
-					//deletePlaylist();
+					deletePlaylist();
 					break;
 				case 7:
 					//navigatePlaylist();
@@ -199,7 +200,7 @@ void deleteSong()
 
 	if (songhead == NULL)
 	{
-		cout << "\nThe list is empty!\n";
+		cout << "\nThe song collection is empty!\n";
 	}
 	else {
 		displaySong();
@@ -534,6 +535,55 @@ void removePlaylistSong() {
 		else
 		{
 			cout << "\nNo playlist found!"<<endl;
+		}
+	}
+}
+
+void deletePlaylist() {
+	string nameList;
+	bool exist = false;
+
+	if (listhead == NULL)
+	{
+		cout << "\nThere is no playlist created!\n";
+	}
+	else {
+		viewPlaylist();
+		cout << "\nEnter a playlist name to delete: ";
+		cin >> nameList;
+
+		list* toDelete = listhead;
+		list* prev = NULL;
+
+		while (toDelete != NULL)
+		{
+			if (toDelete->nameList == nameList)
+			{
+				exist = true;           //If the song id exists, set boolean to true then break out of this
+				break;
+			}
+
+			prev = toDelete;
+			toDelete = toDelete->nextList;
+		}
+
+		if (exist)
+		{
+			if (toDelete == listhead)
+			{
+				listhead = listhead->nextList;
+				delete toDelete;
+			}
+			else
+			{
+				prev->nextList = toDelete->nextList;
+				delete toDelete;
+			}
+			cout << "\nPlaylist " << nameList << " has deleted.\n";
+		}
+		else
+		{
+			cout << "\nPlaylist not found!\n";
 		}
 	}
 }
