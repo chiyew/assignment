@@ -1,0 +1,112 @@
+#include <iostream>
+#include <sstream>
+#include "song.h"
+using namespace std;
+
+song* head = NULL;
+
+void addSong()
+{
+    int id;
+    bool duplicate = false;
+    cout << "Enter the song ID: ";
+    cin >> id;
+
+    if (head != NULL) {                         //If the head is not NULL, which means the linkedlist is populated
+        song* current = head;                 //Set the "current" to the start of the linkedList "head"
+        while (current != NULL) {               //While loop is used to traverse the linkedList until it reaches the end which is null
+            if (current->songID == id) {       //Checks whether the current's song id in the linked list is the same as our "ID" the user input
+                duplicate = true;               //If it equals, set the "duplicate" flag to true and break from the loop
+                break;
+            }
+            current = current->next;            //If not equals, move on to the next node and check again
+        }
+    }
+
+    if (head == NULL || !duplicate) {           //If the head is NULL (means linkedlist is empty) OR there's no duplicates (true)
+        song* newNode = new song;     //Create a new node in the heap memory
+        newNode->songID = id;                  //Set the newNode's songID to id
+        cout << "Enter title of the song: ";
+        getline(cin >> ws,newNode->title);                   //Set the newNode's song title
+        cout << "Enter singer of the song: ";
+        getline(cin >> ws,newNode->singer);
+        cout << "Enter duration of the song in seconds: ";
+        cin >> newNode->durationInSeconds;
+
+        newNode->next = head;                   //Set the "next" to the head
+        head = newNode;                         //then set the head to the newNode (new song) that we just made
+    }
+    else {
+        cout << "Error! Duplicate ID!" << endl; //Else (there's a duplicate) show error
+    }
+}
+
+void displaySong()
+{
+    if (head == NULL) {                         //If the head (first node) is NULL means linkedlist is empty
+        cout << "The list is empty.\n";         //Show that the linkedlist is empty
+    }
+    else {
+        song* current = head;                                  //Else set the current to the head
+        while (current != NULL) {                                   //While the current not NULL
+            cout << "Song ID: " << current->songID << "\t";     //Display using current->
+            cout << "Title: " << current->title << "\t";
+            cout << "Singer: " << current->singer << "\t";
+            int durationInMinutes = current->durationInSeconds / 60;
+            cout << "Duration: " << durationInMinutes << " minutes " << current->durationInSeconds % 60 << " seconds" << endl;
+
+            current = current->next;                                //Set the current to the next using "current->next"
+        }
+    }
+}
+
+void deleteSong()
+{
+    int id;
+    bool exist = false;
+
+    cout << "Enter a Song ID: " << endl;
+    cin >> id;
+
+    if (head == NULL)
+    {
+        cout << "The list is empty.";
+    }
+    else
+    {
+        song* toDelete = head;
+        song* prev = NULL;
+
+        while (toDelete != NULL)
+        {
+            if (toDelete->songID == id)
+            {
+                exist = true;           //If the song id exists, set boolean to true then break out of this
+                break;
+            }
+
+            prev = toDelete;
+            toDelete = toDelete->next;
+        }
+
+        if (exist)
+        {
+            if (toDelete == head)
+            {
+                head = head->next;
+                delete toDelete;
+            }
+            else
+            {
+                prev->next = toDelete->next;
+                delete toDelete;
+            }
+            cout << "Song " << id << " deleted.";
+        }
+        else
+        {
+            cout << "Song not found.\n";
+        }
+    }
+}
+
