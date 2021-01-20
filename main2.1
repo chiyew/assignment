@@ -1,0 +1,795 @@
+#include <iostream>
+#include <sstream>
+using namespace std;
+
+struct song {
+	string songID;
+	string songTitle;
+	string singer;
+	string duration;
+	song* nextSong;
+};
+
+struct songINplaylist {
+	string id;
+	songINplaylist* nextSong;
+};
+
+struct list {
+	string nameList;
+	list* nextList;
+	songINplaylist* headSong;
+};
+
+song* songhead = NULL;
+list* listhead = NULL;
+
+//Function for Song
+void addSong();
+void displaySong();
+void deleteSong();
+void playlistSearch();
+void modifySong();
+
+//Function for Playlist
+void createPlaylist();
+void viewPlaylist();
+void addSongsToPlaylist();
+void viewPlaylistSong();
+void removePlaylistSong();
+void deletePlaylist();
+//void navigatePlaylist();
+
+int main()
+{
+	int option;
+	char cont;
+	do {
+		cout << "Welcome to music management application\n" << endl;
+		cout << "1. Manage Song Collecion\n2. Manage Playlist\n3. Exit Application\n\nPlease enter your action: ";
+		cin >> option;
+		
+		switch (option)
+		{
+		case 1:
+			do {
+				system("cls");
+				cout << "Manage Song Collection Page\n\n";
+				cout << "1. Add Song\n2. Display Song\n3. Delete Song\n4. Playlist Search\n5.Modify Song\n6. Main Menu\n\nPlease enter your selection: ";
+				cin >> option;
+				switch (option)
+				{
+				case 1:
+					addSong();
+					break;
+				case 2:
+					displaySong();
+					break;
+				case 3:
+					deleteSong();
+					break;
+				case 4:
+					playlistSearch();
+					break;
+				case 5:
+					modifySong();
+					break;
+				case 6:
+					system("cls");
+					main();
+				default:
+					cout << "Invalid entry. Please try again";
+				}
+				cout << "\nDo you want to continue?\n";
+				cin >> cont;
+			} while (cont == 'y' || cont == 'Y');
+		case 2:
+			do {
+				system("cls");
+				cout << "Manage Playlist Page\n\n";
+				cout << "1. Create playlist\n2. View Playlist\n3. Add Song to Playlist\n4. View Song in Playlist\n5. Remove Song from Playlist\n6. Delete Playlist\n7. Navigate Playlist\n8. Main Menu\n\nPlease enter your selection: ";
+				cin >> option;
+				switch (option)
+				{
+				case 1:
+					createPlaylist();
+					break;
+				case 2:
+					viewPlaylist();
+					break;
+				case 3:
+					addSongsToPlaylist();
+					break;
+				case 4:
+					viewPlaylistSong();
+					break;
+				case 5:
+					removePlaylistSong();
+					break;
+				case 6:
+					deletePlaylist();
+					break;
+				case 7:
+					//navigatePlaylist();
+					cout << "Hi";
+					break;
+				case 8:
+					system("cls");
+					main();
+				default:
+					cout << "Invalid entry. Please try again";
+				}
+				cout << "\nDo you want to continue?\n";
+				cin >> cont;
+			} while (cont == 'y' || cont == 'Y');
+		case 3:
+			cout << "\nThank you for using this application";
+			exit(0);
+		default:
+			cout << "Invalid entry. Please try again.";
+		}
+		cout << "\nDo you want to continue?\n";
+		cin >> cont;
+		system("cls");
+	} while (cont == 'y' || cont == 'Y');
+}
+
+//Functions for Song
+
+void addSong() {
+	string songID;
+	bool duplicate = false;
+	cout << "\nEnter the song ID: ";
+	cin >> songID;
+
+	if (songhead != NULL) {                       //If the songhead is not NULL, which means the linkedlist is populated
+		song* current = songhead;                 //Set the "current" to the start of the linkedList "head"
+		while (current != NULL) {               //While loop is used to traverse the linkedList until it reaches the end which is null
+			if (current->songID == songID) {       //Checks whether the current's song id in the linked list is the same as our "ID" the user input
+				duplicate = true;               //If it equals, set the "duplicate" flag to true and break from the loop
+				break;
+			}
+			current = current->nextSong;            //If not equals, move on to the next node and check again
+		}
+	}
+
+	if (!duplicate) {           //If the head is NULL (means linkedlist is empty) OR there's no duplicates (true)
+		song* newSong = new song;                   //Create a new node in the heap memory
+		newSong->songID = songID;                  //Set the newNode's songID to id
+		cout << "Enter title of the song: ";
+		getline(cin >> ws, newSong->songTitle);                   //getline(ws) helps to add space 
+		cout << "Enter singer of the song: ";
+		getline(cin >> ws, newSong->singer);
+		cout << "Enter duration of the song: (eg. 3.30) ";
+		cin >> newSong->duration;
+		newSong->nextSong = NULL;                   //Set the "next" to the head
+
+		if (songhead == NULL) {
+			songhead = newSong;                         //then set the head to the newNode (new student) that we just made
+		}
+		else {
+			song* current = songhead;
+			while (current->nextSong != NULL) {
+				current = current->nextSong;
+			}
+			current->nextSong = newSong;
+		}
+	}
+	else {
+		cout << "\nError! Duplicate ID!" << endl; //Else (there's a duplicate) show error
+	}
+}
+
+void displaySong()
+{
+	if (songhead == NULL) {                         //If the head (first node) is NULL means linkedlist is empty
+		cout << "\nThere is no song currently in the collection.\n";         //Show that the linkedlist is empty
+	}
+	else {
+		song* current = songhead;                                  //Else set the current to the head
+		cout << "Song ID\t\tTitle\t\tSinger\t\tDuration\n";
+		while (current != NULL) {                                   //While the current not NULL
+			cout << current->songID << "\t\t";     //Display using current->
+			cout << current->songTitle << "\t\t";
+			cout << current->singer << "\t\t";
+			cout << current->duration << endl;
+
+			current = current->nextSong;                                //Set the current to the next using "current->next"
+		}
+	}
+}
+
+void deleteSong()
+{
+	string songID;
+	bool exist = false;
+
+	if (songhead == NULL)
+	{
+		cout << "\nThe song collection is empty!\n";
+	}
+	else {
+		displaySong();
+		cout << "\nEnter a Song ID to delete: ";
+		cin >> songID;
+
+		song* toDelete = songhead;
+		song* prev = NULL;
+
+		while (toDelete != NULL)
+		{
+			if (toDelete->songID == songID)
+			{
+				exist = true;           //If the song id exists, set boolean to true then break out of this
+				break;
+			}
+
+			prev = toDelete;
+			toDelete = toDelete->nextSong;
+		}
+
+		if (exist)
+		{
+			if (toDelete == songhead)
+			{
+				songhead = songhead->nextSong;
+				delete toDelete;
+			}
+			else
+			{
+				prev->nextSong = toDelete->nextSong;
+				delete toDelete;
+			}
+			cout << "\nSong " << songID << " deleted.\n";
+		}
+		else
+		{
+			cout << "\nSong not found!";
+		}
+	}
+}
+
+void playlistSearch() {
+	string songID;
+
+	displaySong();
+
+	if (songhead == NULL) {
+		cout << "\nThere is no song added.\n";
+	}
+	else {
+		cout << "\nEnter song ID to search for relevant playlist(s): ";
+		cin >> songID;
+		bool songFound = false;
+
+		song* current = songhead;
+		while (current != NULL) {
+			if (current->songID == songID) {
+				songFound = true;
+				break;
+			}
+			current = current->nextSong;
+		}
+		if (songFound) {
+			if (listhead != NULL) {
+				list* currentList = listhead;
+				cout << "\nPlaylist containing song: " << current->songTitle << endl;
+				while (currentList != NULL) {
+					if (currentList->headSong != NULL) {
+						songINplaylist* currentsongINplaylist = currentList->headSong;
+
+						while (currentsongINplaylist != NULL) {
+							if (currentsongINplaylist->id == songID) {
+								cout << " - " << currentList->nameList << endl;
+							}
+							currentsongINplaylist = currentsongINplaylist->nextSong;
+						}
+					}
+					currentList = currentList->nextList;
+				}
+			}
+			else {
+				cout << "\nNo playlist available." << endl;
+			}
+		}
+		else {
+			cout << "\nInvalid song ID. Try again." << endl;
+		}
+	}
+}
+
+void modifySong() {
+	
+	int option;
+	char cont;
+	string songTitle;
+	bool songfound = false;         //songhead is not NULL and declare boolean songfound
+	string songID;
+	cout << "\nEnter ID of song to modify: ";  //Enter the songID to add
+	cin >> songID;
+	
+	song* current = songhead;      //song pointer the current songhead
+	
+	while (current != NULL) {      //current not equals to NULL
+		if (current->songID == songID) {     //songID that is input equals to songID
+			songfound = true;
+			break;
+		}
+		current = current->nextSong;
+	}
+	if (songfound)
+	{
+		do
+		{
+			cout << "Modify your song.\n" << endl;
+			cout << "1. Modify song title\n\nPlease enter your action: ";
+			cin >> option;
+
+			switch (option)
+			{
+				cout << "Currently editing song " << current->songID << endl;
+				cout << "1. Edit Song Title\n2. Edit Song Singer\n3. Edit Song Duration\n4. Main Menu\n\nEnter your selection: ";
+				cin >> option;
+				switch (option)
+				{
+				case 1:
+					cout << "Enter title of the song: ";
+					getline(cin >> ws, current->songTitle);
+					break;
+				case 2:
+					cout << "Enter singer of the song: ";
+					getline(cin >> ws, current->singer);
+					break;
+				case 3:
+					cout << "Enter duration of the song in seconds: ";
+					while (!(cin >> current->duration))
+					{
+						cout << "\nEnter integers only!\n";
+						cin.clear();
+						cin.ignore(123, '\n');
+						cout << "\nEnter duration of the song in seconds: ";
+					}
+					break;
+				case 4:
+					main();
+					break;
+				default:
+					cout << "Invalid entry. Please try again!";
+					break;
+
+				}
+				cout << "Do you want to continue editing this song? (y/n): ";
+				cin >> cont;
+			}
+		} while (cont == 'y' || cont == 'Y');
+	}
+	else {
+		cout << "Song not found.";
+	}
+}
+
+
+//while (current != NULL) {                                   //While the current not NULL
+//	cout << current->songID << "\t\t";     //Display using current->
+//	cout << current->songTitle << "\t\t";
+//	cout << current->singer << "\t\t";
+//	cout << current->duration << endl;
+//
+//	current = current->nextSong;                                //Set the current to the next using "current->next"
+//}
+
+
+			/*cout << current->singer << "\t\t";
+			cout << current->duration << endl;*/
+
+//cout << "Enter title of the song: ";
+//getline(cin >> ws, newSong->songTitle);                   //getline(ws) helps to add space 
+//cout << "Enter singer of the song: ";
+//getline(cin >> ws, newSong->singer);
+//cout << "Enter duration of the song: (eg. 3.30) ";
+//cin >> newSong->duration;
+
+
+
+
+
+
+
+
+
+//Functions for Playlist
+
+void createPlaylist()
+{
+	bool duplicate = false;
+	string nameList;
+	cout << "\nEnter the title of the playlist: ";
+	getline(cin >> ws, nameList);
+
+	if (listhead != NULL) {
+		list* currentList = listhead;
+		while (currentList != NULL) {
+			if (currentList->nameList == nameList) {
+				duplicate = true;
+				break;
+			}
+			currentList = currentList->nextList;
+		}
+	}
+
+	if (!duplicate) {
+		list* newlist = new list;
+		newlist->nameList = nameList;
+		newlist->nextList = NULL;
+		newlist->headSong = NULL;
+
+		if (listhead == NULL) {
+			listhead = newlist;
+		}
+		else {
+			list* currentList = listhead;
+			while (currentList->nextList != NULL) {
+				currentList = currentList->nextList;
+			}
+			currentList->nextList = newlist;
+		}
+	}
+	else
+	{
+		cout << "\nError! Duplicate playlist title!" << endl;
+	}
+}
+
+void viewPlaylist()
+{
+	if (listhead == NULL) {
+		cout << "\nThe list is empty.\n";
+	}
+	else {
+		list* currentList = listhead;
+		while (currentList != NULL) {
+			cout << "\nPlaylist Title: " << currentList->nameList << "\n";
+
+			currentList = currentList->nextList;
+		}
+	}
+}
+
+void addSongsToPlaylist() {
+	
+	viewPlaylist();
+	string songID, nameList;
+
+	if (listhead == NULL) {
+		cout << "\nNo playlist!\n";
+	}
+	else
+	{
+		bool listfound = false;
+
+		cout << "\nEnter name of playlist to add song: ";
+		getline(cin>> ws, nameList);
+
+		list* currentList = listhead;
+		while (currentList != NULL) {                      
+			if (currentList->nameList == nameList) {
+				listfound = true;
+				break;
+			}
+			currentList = currentList->nextList;
+		}
+		if (listfound) {                         //the plalist is found
+			displaySong();                       //call displaySong function
+
+			if (songhead == NULL) {              //check to see songhead is NULL
+				cout << "\nSong collection is empty!"<<endl;        
+			}
+			else
+			{
+				bool songfound = false;         //songhead is not NULL and declare boolean songfound
+				cout << "\nEnter ID of song to add: ";  //Enter the songID to add
+				cin >> songID;
+
+				song* current = songhead;      //song pointer the current songhead
+				while (current != NULL) {      //current not equals to NULL
+					if (current->songID == songID) {     //songID that is input equals to songID
+						songfound = true;
+						break;
+					}
+					current = current->nextSong;  //current to the nextSong
+				}
+				if (songfound) {              
+					bool duplicateSongInList = false;       //find duplicate song in the playlist
+					songINplaylist* currentsongINplaylist = currentList->headSong;      //songINplaylist po
+
+					while (currentsongINplaylist!=NULL)
+					{
+						if (currentsongINplaylist->id == songID) {
+							duplicateSongInList = true;
+							break;
+						}
+						currentsongINplaylist = currentsongINplaylist->nextSong;
+					}
+					if (!duplicateSongInList)
+					{
+						songINplaylist* newsongINplaylist = new songINplaylist;
+						newsongINplaylist->id = current->songID;
+						newsongINplaylist->nextSong = NULL;
+
+						if (currentList->headSong == NULL) {
+							currentList->headSong = newsongINplaylist;
+							cout << "\nSong added." << endl;
+						}
+						else
+						{
+							songINplaylist* currentsongINplaylist = currentList->headSong;
+							while (currentsongINplaylist->nextSong != NULL) {
+								currentsongINplaylist = currentsongINplaylist->nextSong;
+							}
+							currentsongINplaylist->nextSong = newsongINplaylist;
+							cout << "\nSong added." << endl;
+						}
+					}
+					else
+					{
+						cout << "\nSong already exists in playlist!" << endl;
+					}
+				}
+				else
+				{
+					cout << "\nSong is not found!" << endl;
+				}
+			}
+		}
+		else
+		{
+			cout << "\nPlaylist is not found!" << endl;
+		}
+	}
+}
+
+void viewPlaylistSong() 
+{
+	viewPlaylist();
+
+	if (listhead == NULL) {
+		cout << "\nThere is no playlist created!\n";
+	}
+	else
+	{
+		string nameList;
+		bool listfound = false;
+		list* currentList = listhead;
+
+		cout << "\nEnter the playlist to view the song: ";
+		getline(cin >> ws, nameList);
+		while (currentList != NULL)
+		{
+			if (currentList->nameList == nameList)
+			{
+				listfound = true;
+				break;
+			}
+			currentList = currentList->nextList;
+		}
+		if (listfound)
+		{
+			songINplaylist* currentsongINplaylist = currentList->headSong;
+			cout << "Song ID\t\tTitle\t\tSinger\t\tDuration\n";
+			while (currentsongINplaylist != NULL)
+			{
+
+				song* current = songhead;
+				while (current != NULL)
+				{
+					if (currentsongINplaylist->id == current->songID)
+					{
+						cout << current->songID << "\t\t";
+						cout << current->songTitle << "\t\t";
+						cout << current->singer << "\t\t";
+						cout << current->duration << endl;
+					}
+					current = current->nextSong;
+				}
+				currentsongINplaylist = currentsongINplaylist->nextSong;
+			}
+			if (currentList->headSong == NULL) 
+			{
+				cout << "\nThere is no song in this playlist";
+			}
+		}
+		else
+		{
+			cout << "Playlist not found!";
+		}
+	}
+}
+
+void removePlaylistSong() {
+
+	string id;
+	string nameList;
+	bool listfound = false;
+	bool found = false;
+
+	if (listhead == NULL) {
+		cout << "\nThere is no playlist created!\n";
+	}
+	else
+	{
+		viewPlaylist();
+		cout << "\nEnter the playlist to remove a song: ";
+		getline(cin >> ws, nameList);
+
+		list* currentList = listhead;
+		while (currentList != NULL){
+			if (currentList->nameList == nameList) {
+				listfound = true;
+				break;
+			}
+		currentList = currentList->nextList;
+		}
+		if (listfound)
+		{			
+			songINplaylist* currentsongINplaylist = currentList->headSong;
+			cout << "Song ID\t\tTitle\t\tSinger\t\tDuration\n";
+			while (currentsongINplaylist != NULL)
+			{
+
+				song* current = songhead;
+				while (current != NULL)
+				{
+					if (currentsongINplaylist->id == current->songID)
+					{
+						cout << current->songID << "\t\t";
+						cout << current->songTitle << "\t\t";
+						cout << current->singer << "\t\t";
+						cout << current->duration << endl;
+					}
+					current = current->nextSong;
+				}
+				currentsongINplaylist = currentsongINplaylist->nextSong;
+			}
+
+			if (currentList->headSong != NULL) {
+				songINplaylist* toDelete = currentList->headSong;
+				songINplaylist* prev = NULL;
+				cout << "\nType the song id to remove the song: ";
+				getline(cin >> ws, id);
+
+				while (toDelete != NULL) {
+					if (toDelete->id == id) {
+						found = true;
+						break;
+					}
+					prev = toDelete;
+					toDelete = toDelete->nextSong;
+				}
+
+				if (found) {
+					if (toDelete == currentList->headSong) {
+						currentList->headSong = currentList->headSong->nextSong;
+						delete toDelete;													
+					}
+					else {
+						prev->nextSong = toDelete->nextSong;
+						delete toDelete;
+					}
+					cout << "\nThe song has removed from the playlist.\n";
+				}
+				else {
+					cout << "\nSong doesn't exist. Please try again." << endl;
+				}
+			}
+			else
+			{
+				cout << "\nNo song in this playlist!";
+			}
+		}
+		else
+		{
+			cout << "\nNo playlist found!"<<endl;
+		}
+	}
+}
+
+void deletePlaylist() {
+	string nameList;
+	bool exist = false;
+
+	if (listhead == NULL)
+	{
+		cout << "\nThere is no playlist created!\n";
+	}
+	else {
+		viewPlaylist();
+		cout << "\nEnter a playlist name to delete: ";
+		cin >> nameList;
+
+		list* toDelete = listhead;
+		list* prev = NULL;
+
+		while (toDelete != NULL)
+		{
+			if (toDelete->nameList == nameList)
+			{
+				exist = true;           //If the playlist name exists, set boolean to true then break out of this
+				break;
+			}
+
+			prev = toDelete;
+			toDelete = toDelete->nextList;
+		}
+
+		if (exist)
+		{
+			if (toDelete == listhead)
+			{
+				listhead = listhead->nextList;
+				delete toDelete;
+			}
+			else
+			{
+				prev->nextList = toDelete->nextList;
+				delete toDelete;
+			}
+			cout << "\nPlaylist " << nameList << " has deleted.\n";
+		}
+		else
+		{
+			cout << "\nPlaylist not found!\n";
+		}
+	}
+}
+
+//void navigatePlaylist() {
+//	string nameList;
+//	string songID;
+//	if (listhead == NULL) {
+//		cout << "\nThe list is empty.\n";
+//	}
+//	else {
+//		cout << "\nEnter a playlist name to delete: ";
+//		cin >> nameList;
+//		list* currentList = listhead;
+//		while (currentList != NULL) {
+//			cout << "\nPlaylist Title: " << currentList->nameList << "\n";
+//
+//			currentList = currentList->nextList;
+//		}
+//	}
+//	bool songfound = false;         //songhead is not NULL and declare boolean songfound
+//	cout << "\nEnter ID of song to go to next song: ";  //Enter the songID to add
+//	cin >> songID;
+//
+//	song* current = songhead;      //song pointer the current songhead
+//	while (current != NULL) {      //current not equals to NULL
+//		if (current->songID == songID) {     //songID that is input equals to songID
+//			songfound = true;
+//			break;
+//		}
+//		current = current->nextSong;  //current to the nextSong
+//	}
+//	if (songfound)
+//		if (songhead==NULL)
+//		{
+//			cout << "Song not found!";
+//		}
+//		else {
+//			current = current->nextSong;
+//
+//			cout << "Now playing: " << current << endl;
+//		}
+//}
+//
+//if (currentsongINplaylist->id == current->songID)
+//{
+//	cout << current->songID << "\t\t";
+//	cout << current->songTitle << "\t\t";
+//	cout << current->singer << "\t\t";
+//	cout << current->duration << endl;
+//}
+//
+//				}
+//				currentsongINplaylist = currentsongINplaylist->nextSong;
+
