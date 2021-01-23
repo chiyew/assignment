@@ -1108,7 +1108,6 @@ void playlistNavigation()
 						if (toPlay->id == currentSong->songID)
 						{
 							songcomparison = true;
-							//cout << "\nCurrently playing -- " << currentSong->songTitle << " by " << currentSong->singer << endl;
 							break;
 						}
 						currentSong = currentSong->nextSong;
@@ -1126,9 +1125,6 @@ void playlistNavigation()
 							cout << "\n1. Pause\n2. Play\n3. More\n4. Stop\n5. Main Menu\n\nEnter your selection: ";
 							cin >> option;
 						}
-						/*cout << "\nCurrently playing -- " << currentSong->songTitle << " by " << currentSong->singer << endl;
-						cout << "\n1. Pause\n2. Play\n3. More\n4. Stop\n5. Main Menu\n\nEnter your selection: ";
-						cin >> option;*/
 						switch (option)
 						{
 						case 1:
@@ -1143,6 +1139,7 @@ void playlistNavigation()
 
 							do
 							{
+								system("cls");
 								cout << "\nCurrently playing -- " << currentSong->songTitle << " by " << currentSong->singer << endl;
 								cout << "\n1. Next Song\n2. Previous Song\n3. Go Back\n\nEnter your selection: ";
 								cin >> option;
@@ -1162,7 +1159,7 @@ void playlistNavigation()
 										{
 											if (toPlay->id == currentSong->songID)//if song id and to play id match then currently playing next song
 											{
-												cout << "\nCurrently playing -- " << currentSong->songTitle << " by " << currentSong->singer << endl;
+												cout << "\nPlaying -- " << currentSong->songTitle << " by " << currentSong->singer << endl;
 												break;
 											}
 											currentSong = currentSong->nextSong;
@@ -1176,10 +1173,9 @@ void playlistNavigation()
 
 								case 2:
 									//previous song
-									cout << "\nSong -- " << currentSong->songTitle << " cannot be skipped.\n";
-
 									if (toPlay->prevSong != NULL)
 									{
+										cout << "\nSong -- " << currentSong->songTitle << " has been skipped.\n";
 										toPlay = toPlay->prevSong;
 										currentSong = songHead; //before looping, set the current song to head so that it can look from start again
 
@@ -1187,7 +1183,7 @@ void playlistNavigation()
 										{
 											if (toPlay->id == currentSong->songID)//if song id and to play id match then currently playing the previous song
 											{
-												cout << "\nCurrently playing -- " << currentSong->songTitle << " by " << currentSong->singer << endl;
+												cout << "\nPlaying -- " << currentSong->songTitle << " by " << currentSong->singer << endl;
 												break;
 											}
 											currentSong = currentSong->nextSong;
@@ -1195,6 +1191,7 @@ void playlistNavigation()
 									}
 									else
 									{
+										cout << "\nSong -- " << currentSong->songTitle << " cannot be skipped.\n\n";
 										cout << "\nYou are at the beginning of the playlist!\n";
 									}
 									break;
