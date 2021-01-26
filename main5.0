@@ -61,7 +61,7 @@ int main()
 	cout << "1. Manage Song Collecion\n2. Manage Playlist\n3. Exit Application\n\nPlease enter your action: ";
 	while (!(cin >> option))
 	{
-		cout << "\nInvalid Entry. Enter integer only!!\n";
+		cout << "\nInvalid Entry. Enter integer only!!\n";   //validation for integer only input
 		cin.clear();
 		cin.ignore(123, '\n');
 		cout << "\nPlease enter your action: ";
@@ -98,7 +98,7 @@ void songMenu()
 		cout << "1. Add Song\n2. Display Song\n3. Delete Song\n4. Song Search\n5. Edit Song\n6. Main Menu\n\nPlease enter your selection: ";
 		while (!(cin >> option))
 		{
-			cout << "\nInvalid Entry. Enter integer only!!\n";
+			cout << "\nInvalid Entry. Enter integer only!!\n";  //validation for integer only input
 			cin.clear();
 			cin.ignore(123, '\n');
 			cout << "\nPlease enter your action: ";
@@ -130,7 +130,7 @@ void songMenu()
 		}
 		cout << "\nDo you want to continue? (y/n)\n";
 		cin >> cont;
-		while (cont != 'y' && cont != 'n')
+		while (cont != 'y' && cont != 'n')    //validation for 'y' or 'n' options
 		{
 			cout << "Invalid Entry.Enter 'y' or 'n' only!\n";
 			cout << "\nDo you want to continue? (y/n)\n";
@@ -164,7 +164,7 @@ void playlistMenu()
 		cout << "Please enter your selection : ";
 		while (!(cin >> option))
 		{
-			cout << "\nInvalid Entry. Enter integer only!!\n";
+			cout << "\nInvalid Entry. Enter integer only!!\n";   //validation for integer values only
 			cin.clear();
 			cin.ignore(123, '\n');
 			cout << "\nPlease enter your action: ";
@@ -206,7 +206,7 @@ void playlistMenu()
 		cout << "\nDo you want to continue? (y/n) \n";
 		cin >> cont;
 
-		while (cont != 'y' && cont != 'n')
+		while (cont != 'y' && cont != 'n')  //validation for 'y' or 'n' options
 		{
 			cout << "\nInvalid Entry.Enter 'y' or 'n' only!\n";
 			cout << "\nDo you want to continue? (y/n) \n";
@@ -229,7 +229,7 @@ void addSong()
 	int songID;
 	bool duplicate = false;
 	cout << "\nEnter the song ID: ";
-	while (!(cin >> songID))
+	while (!(cin >> songID))    //validation for integer value inputs only
 	{
 		cout << "\nEnter integers only!\n";
 		cin.clear();
@@ -242,7 +242,7 @@ void addSong()
 		song* current = songHead;
 		while (current != NULL)
 		{
-			if (current->songID == songID)
+			if (current->songID == songID)  //check for matching ID
 			{
 				duplicate = true;
 				break;
@@ -425,7 +425,7 @@ void searchSong()
 						{
 							if (currentPlaylistSong->id == songID)//if ID matches with user input
 							{
-								cout << currentPlaylist->playlistTitle << endl; //print the playlist names which consist the song ID
+								cout << currentPlaylist->playlistTitle << endl; //display the playlist names which consist the song ID
 							}
 							currentPlaylistSong = currentPlaylistSong->nextSong;
 						}
@@ -465,7 +465,7 @@ void editSongDetails()
 		song* current = songHead;
 
 		cout << "\nEnter the song ID to be edited: ";
-		while (!(cin >> songID))
+		while (!(cin >> songID)) //validation for integer values input only
 		{
 			cout << "\nEnter integers only!\n";
 			cin.clear();
@@ -477,7 +477,7 @@ void editSongDetails()
 		{
 			while (current != NULL)
 			{
-				if (current->songID == songID)
+				if (current->songID == songID) //check if ID match
 				{
 					songfound = true;
 					break;
@@ -486,7 +486,7 @@ void editSongDetails()
 			}
 		}
 
-		if (songfound)
+		if (songfound) //if the song is found
 		{
 			int option;
 			char cont;
@@ -495,7 +495,7 @@ void editSongDetails()
 				cout << "\nCurrently editing song " << current->songID << "\n\n";
 				cout << "1. Edit Song Title\n2. Edit Song Singer\n3. Edit Song Duration\n4. Back to Menu\n\nEnter your selection: ";
 				cin >> option;
-				switch (option)
+				switch (option) //edit song options for users to chose
 				{
 				case 1:
 					cout << "\nEnter new title of the song: ";
@@ -509,7 +509,7 @@ void editSongDetails()
 					cout << "\nEnter new duration of the song in seconds: ";
 					while (!(cin >> current->duration))
 					{
-						cout << "\nEnter integers only!\n";
+						cout << "\nEnter integers only!\n"; //validation for integer values only
 						cin.clear();
 						cin.ignore(123, '\n');
 						cout << "\nEnter new duration of the song in seconds: ";
@@ -635,7 +635,7 @@ void editPlaylistName()
 
 		while (currentPlaylist != NULL)
 		{
-			if (currentPlaylist->playlistTitle == playlistName)
+			if (currentPlaylist->playlistTitle == playlistName) //check if user input matches the playlist title in playlist linked list
 			{
 				listfound = true;
 				break;
@@ -644,13 +644,13 @@ void editPlaylistName()
 		}
 
 
-		if (listfound)
+		if (listfound) //if playlist is found
 		{
 			system("cls");
 			cout << "\nCurrently editing playlist " << currentPlaylist->playlistTitle << "\n\n";
 
 			cout << "\nEnter new title of the playlist: ";
-			getline(cin >> ws, currentPlaylist->playlistTitle);
+			getline(cin >> ws, currentPlaylist->playlistTitle); //user input for new playlist name
 
 			cout << "\nPlaylist title updated!\n";
 
@@ -704,7 +704,7 @@ void addSongsToPlaylist()
 			{
 				bool songfound = false;
 				cout << "\nEnter ID of song to add: ";
-				while (!(cin >> songID))
+				while (!(cin >> songID)) //validation for integer values only
 				{
 					cout << "\nEnter integers only!\n";
 					cin.clear();
@@ -729,7 +729,7 @@ void addSongsToPlaylist()
 					bool duplicateSongInList = false;
 					playlistSong* currentPlaylistSong = currentPlaylist->headsong; //to point to the playlist song head
 
-					while (currentPlaylistSong != NULL) //if ps head is not null
+					while (currentPlaylistSong != NULL) //if playlistSong head is not null
 					{
 						if (currentPlaylistSong->id == songID) //if id is the same
 						{
@@ -758,7 +758,7 @@ void addSongsToPlaylist()
 
 							while (currentPlaylistSong->nextSong != NULL)
 							{
-								currentPlaylistSong = currentPlaylistSong->nextSong; //traverse to next ps node
+								currentPlaylistSong = currentPlaylistSong->nextSong; //traverse to next playlist song node
 							}
 
 							newPlaylistSong->prevSong = currentPlaylistSong;
@@ -805,14 +805,14 @@ void viewPlaylistSong()
 		getline(cin >> ws, playlistName);
 		while (currentPlaylist != NULL)
 		{
-			if (currentPlaylist->playlistTitle == playlistName)
+			if (currentPlaylist->playlistTitle == playlistName) 
 			{
 				listfound = true;
 				break;
 			}
 			currentPlaylist = currentPlaylist->nextPlaylist;
 		}
-		if (listfound)
+		if (listfound) //if playlist is found
 		{
 			playlistSong* currentPlaylistSong = currentPlaylist->headsong;
 			cout << "\n";
@@ -838,7 +838,7 @@ void viewPlaylistSong()
 				currentPlaylistSong = currentPlaylistSong->nextSong;
 
 			}
-			if (currentPlaylist->headsong == NULL)
+			if (currentPlaylist->headsong == NULL) //if playlist does not contain any song yet then display message
 			{
 				cout << "\nThere is no songs in this playlist.\n";
 			}
@@ -907,22 +907,22 @@ void deletePlaylistSong()
 				currentPlaylistSong = currentPlaylistSong->nextSong;
 			}
 
-			if (currentPlaylist->headsong != NULL)
+			if (currentPlaylist->headsong != NULL) //if selected playlist's contain songs
 			{
-				playlistSong* toDelete = currentPlaylist->headsong;
-				playlistSong* prev = NULL;
+				playlistSong* toDelete = currentPlaylist->headsong; //set toDelete to become the head song of the selected plalyist
+				playlistSong* prev = NULL; //set prev to NULL
 
 				cout << "\nEnter the song id to remove the song: ";
-				while (!(cin >> songID))
+				while (!(cin >> songID))  //validation for integer values only
 				{
-					cout << "\nEnter integers only!\n";
+					cout << "\nEnter integers only!\n"; 
 					cin.clear();
 					cin.ignore(123, '\n');
 					cout << "\nEnter the song ID: ";
 				}
 				while (toDelete != NULL)
 				{
-					if (toDelete->id == songID)
+					if (toDelete->id == songID) //check if user input matches toDelete's ID
 					{
 						found = true;
 						break;
@@ -948,7 +948,7 @@ void deletePlaylistSong()
 						if (toDelete->nextSong != NULL)
 						{
 							toDelete->nextSong->prevSong = toDelete->prevSong;
-							delete toDelete; //delete once the previous and next links have been completed
+							delete toDelete; //delete once the previous and next node linkage have been completed
 						}
 						else
 						{
